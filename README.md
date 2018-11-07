@@ -1,4 +1,6 @@
-# sinum_currus
+# Sinum Currus
+
+Simple clipboard manager
 
 ## Project setup
 ```
