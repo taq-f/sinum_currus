@@ -1,18 +1,38 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div>
+    <ul>
+      <li v-for="element in elements" :key="element.hash">
+        {{ element.text }}
+      </li>
+    </ul>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
+import { ipcRenderer } from "electron";
 
 export default {
-  name: "home",
-  components: {
-    HelloWorld
+  data() {
+    return {
+      message: "ABC",
+      elements: [
+        {
+          hash: "aaa",
+          text: "sample text 1"
+        },
+        {
+          hash: "bbb",
+          text: "sample text 2"
+        },
+        {
+          hash: "ccc",
+          text: "sample text 3"
+        }
+      ]
+    };
+  },
+  mounted() {
+    ipcRenderer.on("channel", () => {});
   }
 };
 </script>

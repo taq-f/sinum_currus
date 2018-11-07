@@ -1,10 +1,12 @@
 "use strict";
 
-import { app, protocol, BrowserWindow } from "electron";
+import { app, protocol, BrowserWindow, ipcMain } from "electron";
 import {
   createProtocol,
   installVueDevtools
 } from "vue-cli-plugin-electron-builder/lib";
+import { interval } from "rxjs";
+
 const isDevelopment = process.env.NODE_ENV !== "production";
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -15,7 +17,7 @@ let win;
 protocol.registerStandardSchemes(["app"], { secure: true });
 function createWindow() {
   // Create the browser window.
-  win = new BrowserWindow({ width: 800, height: 600 });
+  win = new BrowserWindow({ width: 450, height: 900 });
 
   if (isDevelopment) {
     // Load the url of the dev server if in development mode
@@ -26,6 +28,11 @@ function createWindow() {
     // Load the index.html when not in development
     win.loadFile("index.html");
   }
+
+  // start watching clipboard
+  interval(5000).subscribe(() => {
+    win.webContents.send("channel", "ping");
+  });
 
   win.on("closed", () => {
     win = null;
@@ -58,6 +65,10 @@ app.on("ready", async () => {
     await installVueDevtools();
   }
   createWindow();
+
+  ipcMain.on("ping", event => {
+    event.sender.send("pong", Math.random());
+  });
 });
 
 // Exit cleanly on request from parent process in development mode.
